@@ -5,9 +5,9 @@
  *
  * Plugin to allow the user to quickly create filters from the message list
  *
- * @version 0.1
- * @author Philip Weir
+ * @version 0.2
  * @requires SieveRules plugin
+ * @author Philip Weir
  */
 class quickrules extends rcube_plugin
 {
@@ -33,6 +33,9 @@ class quickrules extends rcube_plugin
 
 	function init()
 	{
+		// load required plugin
+		$this->require_plugin('sieverules');
+
 		$rcmail = rcmail::get_instance();
 		$this->register_action('plugin.quickrules.add', array($this, 'init_rule'));
 
