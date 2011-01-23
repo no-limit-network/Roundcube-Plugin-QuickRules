@@ -31,6 +31,13 @@ class quickrules extends rcube_plugin
 					'filternotexists' => 'notexists'
 					);
 
+	private $flags = array('flagread' => '\\Seen',
+					'flagdeleted' => '\\Deleted',
+					'flaganswered' => '\\Answered',
+					'flagdraft' => '\\Draft',
+					'flagflagged' => '\\\\Flagged'
+					);
+
 	function init()
 	{
 		// load required plugin
@@ -96,8 +103,8 @@ class quickrules extends rcube_plugin
 						$actions[] = json_serialize(array('act' => 'fileinto', 'props' => $mbox));
 
 					foreach ($message->headers->flags as $flag) {
-						if ($flag != '')
-							$actions[] = json_serialize(array('act' => 'imapflags', 'props' => $flag));
+						if ($flag == 'Flagged')
+							$actions[] = json_serialize(array('act' => 'imapflags', 'props' => $this->flags['flagflagged']));
 					}
 				}
 
