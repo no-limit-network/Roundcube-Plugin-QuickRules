@@ -93,7 +93,7 @@ class quickrules extends rcube_plugin
 
 					$identity = $rcmail->user->get_identity();
 					$recipient_str = join(', ', $recipients);
-					if ($recipient_str != $identity ['email'])
+					if ($recipient_str != $identity['email'])
 						$rules[] = json_serialize(array('header' => $this->headers['to'], 'op' => $this->operators['filteris'], 'target' => $recipient_str));
 
 					if (strlen($message->subject) > 0)
