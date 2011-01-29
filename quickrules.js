@@ -71,21 +71,34 @@ function quickrules_setup_rules() {
 
 	var acts = document.getElementsByName('_act[]');
 	var folders = document.getElementsByName('_folder[]');
+	var flags = document.getElementsByName('_imapflags[]');
 
 	for (var i = 1; i < acts.length; i++) {
 		$(acts[i]).val(rcmail_quickrules_actions[i-1].act);
 
 		// check for imap4flags
-		if (rcmail_quickrules_actions[i-1].act == 'imapflags' && $(acts[i]).val() != rcmail_quickrules_actions[i-1].act)
-			$(acts[i]).val('imap4flags');
+		if (rcmail_quickrules_actions[i-1].act == 'imapflags') {
+			if ($(acts[i]).val() != rcmail_quickrules_actions[i-1].act)
+				$(acts[i]).val('imap4flags');
 
-		// check values set ok before adding action
-		if ($(acts[i]).val() == rcmail_quickrules_actions[i-1].act) {
-			rcmail.sieverules_action_select(acts[i]);
-			$(folders[i]).val(rcmail_quickrules_actions[i-1].props);
+			// check values set ok before adding action
+			if ($(acts[i]).val() == rcmail_quickrules_actions[i-1].act) {
+				rcmail.sieverules_action_select(acts[i]);
+				$(flags[i]).val(rcmail_quickrules_actions[i-1].props);
+			}
+			else {
+				acts[i].selectedIndex = 0;
+			}
 		}
 		else {
-			acts[i].selectedIndex = 0;
+			// check values set ok before adding action
+			if ($(acts[i]).val() == rcmail_quickrules_actions[i-1].act) {
+				rcmail.sieverules_action_select(acts[i]);
+				$(folders[i]).val(rcmail_quickrules_actions[i-1].props);
+			}
+			else {
+				acts[i].selectedIndex = 0;
+			}
 		}
 	}
 }
@@ -120,10 +133,10 @@ function rcmail_quickrules_status(command) {
 
 function rcmail_quickrules_init() {
 	if (rcmail.env.action == 'plugin.sieverules')
-		rcmail.add_onload('quickrules_add_filter();');
+		quickrules_add_filter();
 
 	if (rcmail.env.action == 'plugin.sieverules.add')
-		rcmail.add_onload('quickrules_setup_rules();');
+		quickrules_setup_rules();
 
 	if (window.rcm_contextmenu_register_command)
 		rcm_contextmenu_register_command('quickrules', 'rcmail_quickrules', rcmail.gettext('quickrules.createfilter'), 'moveto', 'after', false);

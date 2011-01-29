@@ -6,8 +6,8 @@
  * Plugin to allow the user to quickly create filters from the message list
  *
  * @version 0.1
- * @author Philip Weir
  * @requires SieveRules plugin
+ * @author Philip Weir
  */
 class quickrules extends rcube_plugin
 {
@@ -29,6 +29,13 @@ class quickrules extends rcube_plugin
 					'filterisnot' => 'notis',
 					'filterexists' => 'exists',
 					'filternotexists' => 'notexists'
+					);
+
+	private $flags = array('flagread' => '\\Seen',
+					'flagdeleted' => '\\Deleted',
+					'flaganswered' => '\\Answered',
+					'flagdraft' => '\\Draft',
+					'flagflagged' => '\\\\Flagged'
 					);
 
 	function init()
@@ -83,7 +90,7 @@ class quickrules extends rcube_plugin
 
 					$identity = $rcmail->user->get_identity();
 					$recipient_str = join(', ', $recipients);
-					if ($recipient_str != $identity ['email'])
+					if ($recipient_str != $identity['email'])
 						$rules[] = json_serialize(array('header' => $this->headers['to'], 'op' => $this->operators['filteris'], 'target' => $recipient_str));
 
 					if (strlen($message->subject) > 0)
@@ -93,8 +100,8 @@ class quickrules extends rcube_plugin
 						$actions[] = json_serialize(array('act' => 'fileinto', 'props' => $mbox));
 
 					foreach ($message->headers->flags as $flag) {
-						if ($flag != '')
-							$actions[] = json_serialize(array('act' => 'imapflags', 'props' => $flag));
+						if ($flag == 'Flagged')
+							$actions[] = json_serialize(array('act' => 'imapflags', 'props' => $this->flags['flagflagged']));
 					}
 				}
 
