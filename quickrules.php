@@ -5,7 +5,7 @@
  *
  * Plugin to allow the user to quickly create filters from the message list
  *
- * @version 0.2
+ * @version 0.3
  * @requires SieveRules plugin
  * @author Philip Weir
  */
@@ -38,6 +38,8 @@ class quickrules extends rcube_plugin
 					'flagflagged' => '\\\\Flagged'
 					);
 
+	private $additional_headers = array('List-Id');
+
 	function init()
 	{
 		// load required plugin
@@ -56,8 +58,10 @@ class quickrules extends rcube_plugin
 			$this->add_button(array('command' => 'plugin.quickrules.create', 'type' => 'link', 'class' => 'buttonPas quickrules', 'classact' => 'button quickrules', 'classsel' => 'button quickrulesSel', 'title' => 'quickrules.createfilter', 'content' => ' '), 'toolbar');
 		}
 
-		if ($_SESSION['plugin.quickrules'])
+		if ($_SESSION['plugin.quickrules']) {
+			$this->add_hook('imap_init', array($this, 'fetch_headers'));
 			$this->_create_rule();
+		}
 	}
 
 	function init_rule()
@@ -67,6 +71,12 @@ class quickrules extends rcube_plugin
 		$_SESSION['plugin.quickrules.mbox'] = get_input_value('_mbox', RCUBE_INPUT_POST);
 
 		rcmail::get_instance()->output->redirect(array('task' => 'settings', 'action' => 'plugin.sieverules'));
+	}
+
+	function fetch_headers($attr)
+	{
+		$attr['fetch_headers'] .= trim($attr['fetch_headers'] . join(' ', $this->additional_headers));
+		return($attr);
 	}
 
 	private function _create_rule()
@@ -98,6 +108,11 @@ class quickrules extends rcube_plugin
 
 					if (strlen($message->subject) > 0)
 						$rules[] = json_serialize(array('header' => $this->headers['subject'], 'op' => $this->operators['filtercontains'], 'target' => $message->subject));
+
+					foreach ($this->additional_headers as $header) {
+						if (strlen($message->headers->others[strtolower($header)]) > 0)
+							$rules[] = json_serialize(array('header' => 'other::' . $header, 'op' => $this->operators['filteris'], 'target' => $message->headers->others[strtolower($header)]));
+					}
 
 					if ($mbox != 'INBOX')
 						$actions[] = json_serialize(array('act' => 'fileinto', 'props' => $mbox));

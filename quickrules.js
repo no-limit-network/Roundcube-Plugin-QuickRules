@@ -42,14 +42,27 @@ function quickrules_setup_rules() {
 	var headers = document.getElementsByName('_selheader[]');
 	var ops = document.getElementsByName('_operator[]');
 	var targets = document.getElementsByName('_target[]');
+	var otherHeaders = document.getElementsByName('_header[]');
+	var headerParts = "";
 
 	for (var i = 1; i < headers.length; i++) {
 		$(headers[i]).val(rcmail_quickrules_rules[i-1].header);
 		$(ops[i]).val(rcmail_quickrules_rules[i-1].op);
+		headerParts = "";
+
+		// other headers
+		if (rcmail_quickrules_rules[i-1].header.indexOf('other') == 0) {
+			headerParts = rcmail_quickrules_rules[i-1].header.split('::');
+			rcmail_quickrules_rules[i-1].header = 'header::other'
+			$(headers[i]).val(rcmail_quickrules_rules[i-1].header);
+		}
 
 		// check values set ok before adding rule
 		if ($(headers[i]).val() == rcmail_quickrules_rules[i-1].header && $(ops[i]).val() == rcmail_quickrules_rules[i-1].op) {
 			rcmail.sieverules_header_select(headers[i]);
+
+			if (headerParts)
+				$(otherHeaders[i]).val(headerParts[1]);
 
 			// set the op again (header onchange resets it)
 			$(ops[i]).val(rcmail_quickrules_rules[i-1].op);
