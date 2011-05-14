@@ -5,7 +5,7 @@
  *
  * Plugin to allow the user to quickly create filters from the message list
  *
- * @version 0.3
+ * @version 1.0
  * @requires SieveRules plugin
  * @author Philip Weir
  */
