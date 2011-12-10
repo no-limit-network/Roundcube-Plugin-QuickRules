@@ -2,19 +2,6 @@
  * QuickRules plugin script
  */
 
-if (window.rcmail) {
-	rcmail.addEventListener('init', function(evt) {
-		// register command (directly enable in message view mode)
-		rcmail.register_command('plugin.quickrules.create', rcmail_quickrules, rcmail.env.uid);
-
-		if (rcmail.message_list && rcmail.env.junk_mailbox) {
-			rcmail.message_list.addEventListener('select', function(list) {
-				rcmail.enable_command('plugin.quickrules.create', list.get_single_selection() != null);
-			});
-		}
-	})
-}
-
 function rcmail_quickrules() {
 	if (!rcmail.env.uid && (!rcmail.message_list || !rcmail.message_list.get_selection().length))
 		return;
@@ -155,13 +142,28 @@ function rcmail_quickrules_init() {
 		rcm_contextmenu_register_command('quickrules', 'rcmail_quickrules', rcmail.gettext('quickrules.createfilter'), 'moveto', 'after', false);
 }
 
-rcmail.add_onload('rcmail_quickrules_init()');
+$(document).ready(function() {
+	if (window.rcmail) {
+		rcmail.addEventListener('init', function(evt) {
+			// register command (directly enable in message view mode)
+			rcmail.register_command('plugin.quickrules.create', rcmail_quickrules, rcmail.env.uid);
 
-// update button activation after external events
-rcmail.addEventListener('beforedelete', function(props) { rcmail_quickrules_status('beforedelete'); } );
-rcmail.addEventListener('beforemove', function(props) { rcmail_quickrules_status('beforemove'); } );
-rcmail.addEventListener('beforemoveto', function(props) { rcmail_quickrules_status('beforemoveto'); } );
-rcmail.addEventListener('aftermove', function(props) { rcmail_quickrules_status('aftermove'); } );
-rcmail.addEventListener('aftermoveto', function(props) { rcmail_quickrules_status('aftermoveto'); } );
-rcmail.addEventListener('afterpurge', function(props) { rcmail_quickrules_status('afterpurge'); } );
-rcmail.addEventListener('afterexpunge', function(props) { rcmail_quickrules_status('afterexpunge'); } );
+			if (rcmail.message_list && rcmail.env.junk_mailbox) {
+				rcmail.message_list.addEventListener('select', function(list) {
+					rcmail.enable_command('plugin.quickrules.create', list.get_single_selection() != null);
+				});
+			}
+		});
+
+		rcmail.add_onload('rcmail_quickrules_init()');
+
+		// update button activation after external events
+		rcmail.addEventListener('beforedelete', function(props) { rcmail_quickrules_status('beforedelete'); } );
+		rcmail.addEventListener('beforemove', function(props) { rcmail_quickrules_status('beforemove'); } );
+		rcmail.addEventListener('beforemoveto', function(props) { rcmail_quickrules_status('beforemoveto'); } );
+		rcmail.addEventListener('aftermove', function(props) { rcmail_quickrules_status('aftermove'); } );
+		rcmail.addEventListener('aftermoveto', function(props) { rcmail_quickrules_status('aftermoveto'); } );
+		rcmail.addEventListener('afterpurge', function(props) { rcmail_quickrules_status('afterpurge'); } );
+		rcmail.addEventListener('afterexpunge', function(props) { rcmail_quickrules_status('afterexpunge'); } );
+	}
+});
