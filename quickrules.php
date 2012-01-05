@@ -97,7 +97,7 @@ class quickrules extends rcube_plugin
 					$rules[] = json_serialize(array('header' => $this->headers['from'], 'op' => $this->operators['filteris'], 'target' => $message->sender['mailto']));
 
 					$recipients = array();
-					$recipients_array = $rcmail->imap->decode_address_list($message->headers->to);
+					$recipients_array = rcube_mime::decode_address_list($message->headers->to);
 					foreach ($recipients_array as $recipient)
 						$recipients[] = $recipient['mailto'];
 
