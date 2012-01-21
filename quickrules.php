@@ -67,8 +67,8 @@ class quickrules extends rcube_plugin
 	function init_rule()
 	{
 		$_SESSION['plugin.quickrules'] = true;
-		$_SESSION['plugin.quickrules.uids'] = get_input_value('_uid', RCUBE_INPUT_POST);
-		$_SESSION['plugin.quickrules.mbox'] = get_input_value('_mbox', RCUBE_INPUT_POST);
+		$_SESSION['plugin.quickrules.uids'] = rcube_ui::get_input_value('_uid', RCUBE_INPUT_POST);
+		$_SESSION['plugin.quickrules.mbox'] = rcube_ui::get_input_value('_mbox', RCUBE_INPUT_POST);
 
 		rcmail::get_instance()->output->redirect(array('task' => 'settings', 'action' => 'plugin.sieverules'));
 	}
@@ -94,7 +94,7 @@ class quickrules extends rcube_plugin
 				$actions = array();
 				foreach (explode(",", $uids) as $uid) {
 					$message = new rcube_message($uid);
-					$rules[] = json_serialize(array('header' => $this->headers['from'], 'op' => $this->operators['filteris'], 'target' => $message->sender['mailto']));
+					$rules[] = rcube_ui::json_serialize(array('header' => $this->headers['from'], 'op' => $this->operators['filteris'], 'target' => $message->sender['mailto']));
 
 					$recipients = array();
 					$recipients_array = rcube_mime::decode_address_list($message->headers->to);
@@ -104,22 +104,22 @@ class quickrules extends rcube_plugin
 					$identity = $rcmail->user->get_identity();
 					$recipient_str = join(', ', $recipients);
 					if ($recipient_str != $identity['email'])
-						$rules[] = json_serialize(array('header' => $this->headers['to'], 'op' => $this->operators['filteris'], 'target' => $recipient_str));
+						$rules[] = rcube_ui::json_serialize(array('header' => $this->headers['to'], 'op' => $this->operators['filteris'], 'target' => $recipient_str));
 
 					if (strlen($message->subject) > 0)
-						$rules[] = json_serialize(array('header' => $this->headers['subject'], 'op' => $this->operators['filtercontains'], 'target' => $message->subject));
+						$rules[] = rcube_ui::json_serialize(array('header' => $this->headers['subject'], 'op' => $this->operators['filtercontains'], 'target' => $message->subject));
 
 					foreach ($this->additional_headers as $header) {
 						if (strlen($message->headers->others[strtolower($header)]) > 0)
-							$rules[] = json_serialize(array('header' => 'other::' . $header, 'op' => $this->operators['filteris'], 'target' => $message->headers->others[strtolower($header)]));
+							$rules[] = rcube_ui::json_serialize(array('header' => 'other::' . $header, 'op' => $this->operators['filteris'], 'target' => $message->headers->others[strtolower($header)]));
 					}
 
 					if ($mbox != 'INBOX')
-						$actions[] = json_serialize(array('act' => 'fileinto', 'props' => $mbox));
+						$actions[] = rcube_ui::json_serialize(array('act' => 'fileinto', 'props' => $mbox));
 
 					foreach ($message->headers->flags as $flag) {
 						if ($flag == 'Flagged')
-							$actions[] = json_serialize(array('act' => 'imapflags', 'props' => $this->flags['flagflagged']));
+							$actions[] = rcube_ui::json_serialize(array('act' => 'imapflags', 'props' => $this->flags['flagflagged']));
 					}
 				}
 
