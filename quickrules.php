@@ -67,8 +67,8 @@ class quickrules extends rcube_plugin
 	function init_rule()
 	{
 		$_SESSION['plugin.quickrules'] = true;
-		$_SESSION['plugin.quickrules.uids'] = rcube_ui::get_input_value('_uid', RCUBE_INPUT_POST);
-		$_SESSION['plugin.quickrules.mbox'] = rcube_ui::get_input_value('_mbox', RCUBE_INPUT_POST);
+		$_SESSION['plugin.quickrules.uids'] = rcube_ui::get_input_value('_uid', rcube_ui::INPUT_POST);
+		$_SESSION['plugin.quickrules.mbox'] = rcube_ui::get_input_value('_mbox', rcube_ui::INPUT_POST);
 
 		rcmail::get_instance()->output->redirect(array('task' => 'settings', 'action' => 'plugin.sieverules'));
 	}
