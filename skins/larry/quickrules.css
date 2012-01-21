@@ -5,22 +5,17 @@
 #messagetoolbar a.quickrules,
 #messagetoolbar a.quickrulesSel
 {
-  text-indent: -1000px;
   background-image: url(mail_toolbar.png);
 }
 
-#messagetoolbar a.quickrules
-{
-  background-position: 0 0;
-}
-
+#messagetoolbar a.quickrules,
 #messagetoolbar a.quickrulesSel
 {
-  background-position: 0 -32px;
+  background-position: center -16px;
 }
 
-#rcmContextMenu .quickrules a
+#rcmContextMenu .quickrules a span
 {
   background-image: url(messageactions.png);
-  background-position: 7px 0px;
+  background-position: 5px 0;
 }

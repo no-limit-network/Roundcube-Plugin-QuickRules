@@ -55,7 +55,7 @@ class quickrules extends rcube_plugin
 			if ($rcmail->output->browser->ie && $rcmail->output->browser->ver == 6)
 				$this->include_stylesheet($this->local_skin_path() . '/ie6hacks.css');
 
-			$this->add_button(array('command' => 'plugin.quickrules.create', 'type' => 'link', 'class' => 'buttonPas quickrules', 'classact' => 'button quickrules', 'classsel' => 'button quickrulesSel', 'title' => 'quickrules.createfilter', 'content' => ' '), 'toolbar');
+			$this->add_button(array('command' => 'plugin.quickrules.create', 'type' => 'link', 'class' => 'button buttonPas quickrules disabled', 'classact' => 'button quickrules', 'classsel' => 'button quickrulesSel', 'title' => 'quickrules.createfilterbased', 'label' => 'quickrules.createfilter'), 'toolbar');
 		}
 
 		if ($_SESSION['plugin.quickrules']) {
