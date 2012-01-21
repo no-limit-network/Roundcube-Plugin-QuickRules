@@ -59,7 +59,7 @@ class quickrules extends rcube_plugin
 		}
 
 		if ($_SESSION['plugin.quickrules']) {
-			$this->add_hook('imap_init', array($this, 'fetch_headers'));
+			$this->add_hook('storage_init', array($this, 'fetch_headers'));
 			$this->_create_rule();
 		}
 	}
@@ -88,7 +88,7 @@ class quickrules extends rcube_plugin
 			if ($rcmail->action == 'plugin.sieverules.add') {
 				$uids = $_SESSION['plugin.quickrules.uids'];
 				$mbox = $_SESSION['plugin.quickrules.mbox'];
-				$rcmail->imap_connect();
+				$rcmail->storage_connect();
 
 				$rules = array();
 				$actions = array();
