@@ -4,7 +4,7 @@
 	http://pear.php.net/dtd/package-2.0
 	http://pear.php.net/dtd/package-2.0.xsd">
 	<name>quickrules</name>
-	<channel>pear.roundcube.net</channel>
+	<uri>http://github.com/JohnDoh/Roundcube-Plugin-QuickRules/</uri>
 	<summary>Adds a button to the message list to allow the quick creation of rules in the SieveRules plugin</summary>
 	<description>Adds a button to the message list to allow the quick creation of rules in the SieveRules plugin. Infomration from selected emails is used to prefile the new rule form.</description>
 	<lead>
@@ -13,8 +13,8 @@
 		<email>roundcube@tehinterweb.co.uk</email>
 		<active>yes</active>
 	</lead>
-	<date>2012-01-21</date>
-	<time>11:26:15</time>
+	<date>2012-01-22</date>
+	<time>10:42:53</time>
 	<version>
 		<release>1.3</release>
 		<api>1.3</api>
@@ -23,7 +23,7 @@
 		<release>stable</release>
 		<api>stable</api>
 	</stability>
-	<license uri="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3</license>
+	<license uri="http://www.gnu.org/licenses/gpl.html">GNU GPLv3+</license>
 	<notes>-</notes>
 	<contents>
 		<dir baseinstalldir="/" name="/">
@@ -70,7 +70,7 @@
 			</pearinstaller>
 			<package>
 				<name>sieverules</name>
-				<channel>pear.roundcube.net</channel>
+				<uri>http://github.com/JohnDoh/Roundcube-Plugin-SieveRules-Managesieve/</uri>
 				<min>1.15</min>
 			</package>
 		</required>
