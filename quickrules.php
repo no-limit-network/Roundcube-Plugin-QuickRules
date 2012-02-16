@@ -45,7 +45,7 @@ class quickrules extends rcube_plugin
 		// load required plugin
 		$this->require_plugin('sieverules');
 
-		$rcmail = rcmail::get_instance();
+		$rcmail = rcube::get_instance();
 		$this->register_action('plugin.quickrules.add', array($this, 'init_rule'));
 
 		if ($rcmail->task == 'mail' && ($rcmail->action == '' || $rcmail->action == 'show')) {
@@ -70,7 +70,7 @@ class quickrules extends rcube_plugin
 		$_SESSION['plugin.quickrules.uids'] = rcube_ui::get_input_value('_uid', rcube_ui::INPUT_POST);
 		$_SESSION['plugin.quickrules.mbox'] = rcube_ui::get_input_value('_mbox', rcube_ui::INPUT_POST);
 
-		rcmail::get_instance()->output->redirect(array('task' => 'settings', 'action' => 'plugin.sieverules'));
+		rcube::get_instance()->output->redirect(array('task' => 'settings', 'action' => 'plugin.sieverules'));
 	}
 
 	function fetch_headers($attr)
@@ -81,7 +81,7 @@ class quickrules extends rcube_plugin
 
 	private function _create_rule()
 	{
-		$rcmail = rcmail::get_instance();
+		$rcmail = rcube::get_instance();
 		if ($rcmail->action == 'plugin.sieverules' || $rcmail->action == 'plugin.sieverules.add') {
 			$this->include_script('quickrules.js');
 
