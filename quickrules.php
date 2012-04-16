@@ -67,8 +67,8 @@ class quickrules extends rcube_plugin
 	function init_rule()
 	{
 		$_SESSION['plugin.quickrules'] = true;
-		$_SESSION['plugin.quickrules.uids'] = rcube_ui::get_input_value('_uid', rcube_ui::INPUT_POST);
-		$_SESSION['plugin.quickrules.mbox'] = rcube_ui::get_input_value('_mbox', rcube_ui::INPUT_POST);
+		$_SESSION['plugin.quickrules.uids'] = rcube_utils::get_input_value('_uid', rcube_utils::INPUT_POST);
+		$_SESSION['plugin.quickrules.mbox'] = rcube_utils::get_input_value('_mbox', rcube_utils::INPUT_POST);
 
 		rcube::get_instance()->output->redirect(array('task' => 'settings', 'action' => 'plugin.sieverules'));
 	}
@@ -123,8 +123,8 @@ class quickrules extends rcube_plugin
 					}
 				}
 
-				$this->api->output->add_script(JS_OBJECT_NAME . "_quickrules_rules = [" . implode(',', $rules) . "];");
-				$this->api->output->add_script(JS_OBJECT_NAME . "_quickrules_actions = [" . implode(',', $actions) . "];");
+				$this->api->output->add_script(rcmail::JS_OBJECT_NAME . "_quickrules_rules = [" . implode(',', $rules) . "];");
+				$this->api->output->add_script(rcmail::JS_OBJECT_NAME . "_quickrules_actions = [" . implode(',', $actions) . "];");
 
 				$_SESSION['plugin.quickrules'] = false;
 				$_SESSION['plugin.quickrules.uids'] = '';
