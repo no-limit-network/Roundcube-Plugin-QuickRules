@@ -88,7 +88,7 @@ class quickrules extends rcube_plugin
 			if ($rcmail->action == 'plugin.sieverules.add') {
 				$uids = $_SESSION['plugin.quickrules.uids'];
 				$mbox = $_SESSION['plugin.quickrules.mbox'];
-				$rcmail->storage_connect();
+				$rcmail->storage_init();
 
 				$rules = array();
 				$actions = array();
