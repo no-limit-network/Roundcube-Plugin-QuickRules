@@ -5,7 +5,7 @@
 #messagetoolbar a.quickrules,
 #messagetoolbar a.quickrulesSel
 {
-  text-indent: -1000px;
+  text-indent: -5000px;
   background-image: url(mail_toolbar.png);
 }
 
