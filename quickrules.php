@@ -123,8 +123,8 @@ class quickrules extends rcube_plugin
 					}
 				}
 
-				$this->api->output->add_script(rcmail::JS_OBJECT_NAME . "_quickrules_rules = [" . implode(',', $rules) . "];");
-				$this->api->output->add_script(rcmail::JS_OBJECT_NAME . "_quickrules_actions = [" . implode(',', $actions) . "];");
+				$this->api->output->add_script(rcmail_output::JS_OBJECT_NAME . "_quickrules_rules = [" . implode(',', $rules) . "];");
+				$this->api->output->add_script(rcmail_output::JS_OBJECT_NAME . "_quickrules_actions = [" . implode(',', $actions) . "];");
 
 				$_SESSION['plugin.quickrules'] = false;
 				$_SESSION['plugin.quickrules.uids'] = '';
