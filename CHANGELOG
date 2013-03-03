@@ -1,6 +1,8 @@
 Roundcube Webmail Quickrules
 ============================
 
+Version 1.4 (2013-03-03, rc-0.9)
+=================================================
  * rename default skin to classic (c40419bdfe)
  * rcube_ui > rcube_utils (r6091)
  * Update for Roundcube framework
