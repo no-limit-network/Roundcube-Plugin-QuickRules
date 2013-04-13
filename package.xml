@@ -14,7 +14,7 @@
 		<active>yes</active>
 	</lead>
 	<date>2013-04-13</date>
-	<time>11:30:15</time>
+	<time>11:52:06</time>
 	<version>
 		<release>2.0</release>
 		<api>2.0</api>
@@ -71,7 +71,7 @@
 			<package>
 				<name>sieverules</name>
 				<uri>http://github.com/JohnDoh/Roundcube-Plugin-SieveRules-Managesieve/</uri>
-				<min>1.15</min>
+				<min>2.0</min>
 			</package>
 		</required>
 	</dependencies>
