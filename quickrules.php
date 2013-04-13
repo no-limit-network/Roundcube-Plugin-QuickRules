@@ -88,10 +88,7 @@ class quickrules extends rcube_plugin
 						$args['script']['tests'][] = array('type' => 'header', 'operator' => 'is', 'header' => $header, 'target' => $message->headers->others[strtolower($header)]);
 				}
 
-				if ($mbox != 'INBOX')
-					$args['script']['actions'][] = array('type' => 'fileinto', 'target' => $mbox);
-				else
-					$args['script']['actions'][] = array('type' => 'fileinto', 'target' => 'INBOX');
+				$args['script']['actions'][] = array('type' => 'fileinto', 'target' => $mbox);
 
 				foreach ($message->headers->flags as $flag => $value) {
 					if ($flag == 'FLAGGED')
