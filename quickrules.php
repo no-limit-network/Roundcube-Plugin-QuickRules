@@ -13,31 +13,6 @@ class quickrules extends rcube_plugin
 {
 	public $task = 'mail|settings';
 
-	// default values: label => value
-	private $headers = array('subject' => 'header::Subject',
-					'from' => 'address::From',
-					'to' => 'address::To',
-					'cc' => 'address::Cc',
-					'bcc' => 'address::Bcc',
-					'envelopeto' => 'envelope::To',
-					'envelopefrom' => 'envelope::From'
-					);
-
-	private $operators = array('filtercontains' => 'contains',
-					'filternotcontains' => 'notcontains',
-					'filteris' => 'is',
-					'filterisnot' => 'notis',
-					'filterexists' => 'exists',
-					'filternotexists' => 'notexists'
-					);
-
-	private $flags = array('flagread' => '\\Seen',
-					'flagdeleted' => '\\Deleted',
-					'flaganswered' => '\\Answered',
-					'flagdraft' => '\\Draft',
-					'flagflagged' => '\\\\Flagged'
-					);
-
 	private $additional_headers = array('List-Id');
 
 	function init()
@@ -57,10 +32,13 @@ class quickrules extends rcube_plugin
 
 			$this->add_button(array('command' => 'plugin.quickrules.create', 'type' => 'link', 'class' => 'button buttonPas quickrules disabled', 'classact' => 'button quickrules', 'classsel' => 'button quickrulesSel', 'title' => 'quickrules.createfilterbased', 'label' => 'quickrules.createfilter'), 'toolbar');
 		}
+		elseif ($rcmail->task == 'settings' && $rcmail->action == 'plugin.sieverules') {
+			$this->include_script('quickrules.js');
+		}
 
 		if ($_SESSION['plugin.quickrules']) {
 			$this->add_hook('storage_init', array($this, 'fetch_headers'));
-			$this->_create_rule();
+			$this->add_hook('sieverules_init', array($this, 'create_rule'));
 		}
 	}
 
@@ -79,58 +57,54 @@ class quickrules extends rcube_plugin
 		return($attr);
 	}
 
-	private function _create_rule()
+	function create_rule($args)
 	{
 		$rcmail = rcube::get_instance();
-		if ($rcmail->action == 'plugin.sieverules' || $rcmail->action == 'plugin.sieverules.add') {
-			$this->include_script('quickrules.js');
+		if ($rcmail->action == 'plugin.sieverules.add') {
+			$uids = $_SESSION['plugin.quickrules.uids'];
+			$mbox = $_SESSION['plugin.quickrules.mbox'];
+			$headers = $args['defaults']['headers'];
+			$rcmail->storage_init();
 
-			if ($rcmail->action == 'plugin.sieverules.add') {
-				$uids = $_SESSION['plugin.quickrules.uids'];
-				$mbox = $_SESSION['plugin.quickrules.mbox'];
-				$rcmail->storage_init();
+			foreach (explode(",", $uids) as $uid) {
+				$message = new rcube_message($uid);
+				$args['script']['tests'][] = array('type' => $rcmail->config->get('sieverules_address_rules', true) ? 'address' : 'header', 'operator' => 'is', 'header' => 'From', 'target' => $message->sender['mailto']);
 
-				$rules = array();
-				$actions = array();
-				foreach (explode(",", $uids) as $uid) {
-					$message = new rcube_message($uid);
-					$rules[] = rcube_output::json_serialize(array('header' => $this->headers['from'], 'op' => $this->operators['filteris'], 'target' => $message->sender['mailto']));
+				$recipients = array();
+				$recipients_array = rcube_mime::decode_address_list($message->headers->to);
+				foreach ($recipients_array as $recipient)
+					$recipients[] = $recipient['mailto'];
 
-					$recipients = array();
-					$recipients_array = rcube_mime::decode_address_list($message->headers->to);
-					foreach ($recipients_array as $recipient)
-						$recipients[] = $recipient['mailto'];
+				$identity = $rcmail->user->get_identity();
+				$recipient_str = join(', ', $recipients);
+				if ($recipient_str != $identity['email'])
+					$args['script']['tests'][] = array('type' => $rcmail->config->get('sieverules_address_rules', true) ? 'address' : 'header', 'operator' => 'is', 'header' => 'To', 'target' => $recipient_str);
 
-					$identity = $rcmail->user->get_identity();
-					$recipient_str = join(', ', $recipients);
-					if ($recipient_str != $identity['email'])
-						$rules[] = rcube_output::json_serialize(array('header' => $this->headers['to'], 'op' => $this->operators['filteris'], 'target' => $recipient_str));
+				if (strlen($message->subject) > 0)
+					$args['script']['tests'][] = array('type' => 'header', 'operator' => 'contains', 'header' => 'Subject', 'target' => $message->subject);
 
-					if (strlen($message->subject) > 0)
-						$rules[] = rcube_output::json_serialize(array('header' => $this->headers['subject'], 'op' => $this->operators['filtercontains'], 'target' => $message->subject));
-
-					foreach ($this->additional_headers as $header) {
-						if (strlen($message->headers->others[strtolower($header)]) > 0)
-							$rules[] = rcube_output::json_serialize(array('header' => 'other::' . $header, 'op' => $this->operators['filteris'], 'target' => $message->headers->others[strtolower($header)]));
-					}
-
-					if ($mbox != 'INBOX')
-						$actions[] = rcube_output::json_serialize(array('act' => 'fileinto', 'props' => $mbox));
-
-					foreach ($message->headers->flags as $flag) {
-						if ($flag == 'Flagged')
-							$actions[] = rcube_output::json_serialize(array('act' => 'imapflags', 'props' => $this->flags['flagflagged']));
-					}
+				foreach ($this->additional_headers as $header) {
+					if (strlen($message->headers->others[strtolower($header)]) > 0)
+						$args['script']['tests'][] = array('type' => 'header', 'operator' => 'is', 'header' => $header, 'target' => $message->headers->others[strtolower($header)]);
 				}
 
-				$this->api->output->add_script(rcmail_output::JS_OBJECT_NAME . "_quickrules_rules = [" . implode(',', $rules) . "];");
-				$this->api->output->add_script(rcmail_output::JS_OBJECT_NAME . "_quickrules_actions = [" . implode(',', $actions) . "];");
+				if ($mbox != 'INBOX')
+					$args['script']['actions'][] = array('type' => 'fileinto', 'target' => $mbox);
+				else
+					$args['script']['actions'][] = array('type' => 'fileinto', 'target' => 'INBOX');
 
-				$_SESSION['plugin.quickrules'] = false;
-				$_SESSION['plugin.quickrules.uids'] = '';
-				$_SESSION['plugin.quickrules.mbox'] = '';
+				foreach ($message->headers->flags as $flag => $value) {
+					if ($flag == 'FLAGGED')
+						$args['script']['actions'][] = array('type' => 'imapflags', 'target' => '\\\\Flagged');
+				}
 			}
+
+			$_SESSION['plugin.quickrules'] = false;
+			$_SESSION['plugin.quickrules.uids'] = '';
+			$_SESSION['plugin.quickrules.mbox'] = '';
 		}
+
+		return $args;
 	}
 }
 

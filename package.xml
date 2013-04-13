@@ -13,11 +13,11 @@
 		<email>roundcube@tehinterweb.co.uk</email>
 		<active>yes</active>
 	</lead>
-	<date>2013-02-24</date>
-	<time>10:16:53</time>
+	<date>2013-04-13</date>
+	<time>11:30:15</time>
 	<version>
-		<release>1.4</release>
-		<api>1.4</api>
+		<release>2.0</release>
+		<api>2.0</api>
 	</version>
 	<stability>
 		<release>stable</release>
