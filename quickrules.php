@@ -32,7 +32,7 @@ class quickrules extends rcube_plugin
 
 			$this->add_button(array('command' => 'plugin.quickrules.create', 'type' => 'link', 'class' => 'button buttonPas quickrules disabled', 'classact' => 'button quickrules', 'classsel' => 'button quickrulesSel', 'title' => 'quickrules.createfilterbased', 'label' => 'quickrules.createfilter'), 'toolbar');
 		}
-		elseif ($rcmail->task == 'settings' && $rcmail->action == 'plugin.sieverules') {
+		elseif ($rcmail->task == 'settings' && $rcmail->action == 'plugin.sieverules' && $_SESSION['plugin.quickrules']) {
 			$this->include_script('quickrules.js');
 		}
 
