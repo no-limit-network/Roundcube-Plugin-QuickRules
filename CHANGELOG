@@ -1,7 +1,10 @@
 Roundcube Webmail Quickrules
 ============================
 
+Version 1.5 (2013-05-193, rc-1.0)
+=================================================
  * use new sieverules_init hook
+ **** code branching/tagging no longer sync'd to roundcube versions ****
 
 Version 1.4 (2013-03-03, rc-0.9)
 =================================================
