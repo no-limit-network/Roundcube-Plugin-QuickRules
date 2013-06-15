@@ -20,7 +20,7 @@ folder for details on the skin license.
 Install
 -------
 * Place this plugin folder into plugins directory of Roundcube
-* Add quickrules to $rcmail_config['plugins'] in your Roundcube config
+* Add quickrules to $config['plugins'] in your Roundcube config
 
 **NB:** When downloading the plugin from GitHub you will need to create a
 directory called quickrules and place the files in there, ignoring the root
